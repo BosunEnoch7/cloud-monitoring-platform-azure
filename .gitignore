@@ -1,0 +1,50 @@
+# Terraform working data and state (state may contain sensitive values)
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.plan
+crash.log
+crash.*.log
+
+# Environment-specific Terraform values
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+# Terraform CLI configuration and local overrides
+.terraformrc
+terraform.rc
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+secrets/
+
+# Generated service data
+prometheus/data/
+grafana/data/
+alertmanager/data/
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local logs and temporary files
+*.log
+tmp/
+temp/
