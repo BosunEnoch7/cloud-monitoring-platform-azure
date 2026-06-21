@@ -47,6 +47,18 @@ Only administrative access should cross the public boundary:
 
 Grafana should eventually be served through an authenticated HTTPS endpoint. Monitoring ports must not be opened broadly to the internet.
 
+The NSG is associated with the monitoring subnet, making the subnet the baseline network-policy boundary. SSH and Grafana use separate rules so each access path can be reviewed, changed, or removed independently.
+
+Azure's built-in NSG defaults deny unsolicited inbound internet traffic that is not explicitly allowed. We do not add redundant deny rules because they would add policy noise without strengthening the effective default behavior.
+
+## Compute security
+
+The monitoring host uses an Ubuntu LTS Gen2 image with password authentication disabled. Secure Boot and vTPM establish a stronger boot chain, while Azure-managed boot diagnostics avoids creating a separate diagnostics storage account.
+
+A system-assigned managed identity is enabled but receives no role assignment by default. Identity existence does not grant access; permissions must be added separately through least-privilege role assignments.
+
+The initial public IP is a cost-and-accessibility tradeoff for the portfolio environment. Source-restricted NSG rules reduce exposure, but a future production evolution should remove direct administrative ingress in favor of private access.
+
 ## Key decisions
 
 ### Single VM for the first implementation

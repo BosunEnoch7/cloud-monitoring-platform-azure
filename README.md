@@ -1,4 +1,4 @@
-# Cloud Monitoring Platform
+# Cloud Monitoring Platform Azure
 
 A production-inspired monitoring and observability platform built on Microsoft Azure with Terraform, Ubuntu Linux, Prometheus, Grafana, Alertmanager, and GitHub Actions.
 
@@ -6,9 +6,9 @@ The project is designed as a portfolio demonstration of infrastructure as code, 
 
 ## Project status
 
-**Current phase:** Repository foundation and architecture design.
+**Current phase:** Azure infrastructure and GitHub Actions delivery path ready for first deployment.
 
-No cloud resources are deployed yet, and no Terraform configuration has been implemented.
+The Terraform graph defines the resource group, network security boundary, public IP, NIC, and hardened Ubuntu monitoring VM. Remote state, OIDC identities, GitHub variables, protected deployment approval, and active workflows are configured. The workload infrastructure has not yet been applied.
 
 ## Planned architecture
 
@@ -54,14 +54,13 @@ The initial implementation uses a single VM to control portfolio cost. This crea
 ## Roadmap
 
 - [x] Define the architecture and repository boundaries
-- [ ] Implement the Azure development environment with Terraform
+- [ ] Implement Azure resources in the validated Terraform module contracts
 - [ ] Bootstrap and harden the Ubuntu host
 - [ ] Configure Node Exporter and Prometheus
 - [ ] Provision Grafana dashboards
 - [ ] Configure Alertmanager email routing
 - [ ] Add validation and deployment workflows in GitHub Actions
 - [ ] Exercise failure scenarios and document incident response
-- [ ] Add an AWS implementation
 
 ## Documentation
 

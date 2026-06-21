@@ -11,6 +11,8 @@ crash.*.log
 *.tfvars
 *.tfvars.json
 !*.tfvars.example
+backend.hcl
+!backend.hcl.example
 
 # Terraform CLI configuration and local overrides
 .terraformrc

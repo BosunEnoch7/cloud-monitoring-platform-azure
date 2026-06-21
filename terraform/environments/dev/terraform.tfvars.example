@@ -1,0 +1,18 @@
+# Copy this file to terraform.tfvars and replace every example value.
+# terraform.tfvars is ignored by Git.
+
+subscription_id = "00000000-0000-0000-0000-000000000000"
+owner           = "your-name"
+location        = "eastus"
+
+# Find your current public IPv4 address and keep the /32 suffix.
+# 192.0.2.0/24 is reserved for documentation and will not grant real access.
+admin_source_cidrs = ["192.0.2.10/32"]
+
+# Supply the contents of your PUBLIC key file (for example, id_ed25519.pub).
+# Never paste or commit a private key.
+ssh_public_key = "ssh-ed25519 REPLACE_WITH_YOUR_PUBLIC_KEY your-email@example.com"
+
+additional_tags = {
+  cost_center = "portfolio"
+}
