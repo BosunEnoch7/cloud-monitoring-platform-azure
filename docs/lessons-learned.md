@@ -8,4 +8,8 @@ The first GitHub Actions apply successfully created the resource group and netwo
 
 Terraform preserved the successfully created resources in remote state and released the state lock. No manual deletion or state editing was necessary. The next plan can reconcile the partial deployment and create only the missing VM.
 
-The replacement, `Standard_B2als_v2`, retains the intended 2-vCPU/4-GiB capacity with a burstable cost profile. This demonstrates why regional SKU presence does not guarantee live allocation capacity and why apply workflows must be safely rerunnable.
+The first replacement, `Standard_B2als_v2`, retained the intended 2-vCPU/4-GiB capacity but was rejected by the same live B-series capacity restriction on the next approved apply.
+
+The project therefore moved to `Standard_D2as_v5`, a 2-vCPU/8-GiB general-purpose SKU. This increases compute cost, but it avoids repeatedly selecting from the constrained burstable pool and gives Prometheus and Grafana more realistic memory headroom.
+
+This demonstrates why regional SKU presence does not guarantee live allocation capacity and why apply workflows must be safely rerunnable. Each failed apply left existing infrastructure and remote state healthy; only the missing VM remained in the next plan.
