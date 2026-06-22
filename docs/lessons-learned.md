@@ -13,3 +13,5 @@ The first replacement, `Standard_B2als_v2`, retained the intended 2-vCPU/4-GiB c
 The project therefore moved to `Standard_D2as_v5`, a 2-vCPU/8-GiB general-purpose SKU. This increases compute cost, but it avoids repeatedly selecting from the constrained burstable pool and gives Prometheus and Grafana more realistic memory headroom.
 
 This demonstrates why regional SKU presence does not guarantee live allocation capacity and why apply workflows must be safely rerunnable. Each failed apply left existing infrastructure and remote state healthy; only the missing VM remained in the next plan.
+
+After the general-purpose SKU was also rejected from the regional pool, the design adopted explicit East US Zone 1 placement for both the VM and its Standard public IP. Azure capacity is partitioned by allocation scope, so a zonal request can succeed even when the non-zonal regional pool is constrained.

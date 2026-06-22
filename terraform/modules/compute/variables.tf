@@ -23,6 +23,16 @@ variable "location" {
   }
 }
 
+variable "availability_zone" {
+  description = "Availability zone for the VM and its public IP."
+  type        = string
+
+  validation {
+    condition     = contains(["1", "2", "3"], var.availability_zone)
+    error_message = "availability_zone must be 1, 2, or 3."
+  }
+}
+
 variable "subnet_id" {
   description = "Resource ID of the subnet to which the VM network interface will attach."
   type        = string

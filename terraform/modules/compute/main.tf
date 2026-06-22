@@ -4,6 +4,7 @@ resource "azurerm_public_ip" "this" {
   location            = var.location
   allocation_method   = "Static"
   sku                 = "Standard"
+  zones               = [var.availability_zone]
   tags                = var.tags
 }
 
@@ -26,6 +27,7 @@ resource "azurerm_linux_virtual_machine" "this" {
   computer_name                   = "monitoring"
   resource_group_name             = var.resource_group_name
   location                        = var.location
+  zone                            = var.availability_zone
   size                            = var.vm_size
   admin_username                  = var.admin_username
   disable_password_authentication = true

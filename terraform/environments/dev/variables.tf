@@ -41,6 +41,17 @@ variable "location" {
   }
 }
 
+variable "availability_zone" {
+  description = "East US availability zone used for zonal compute and public IP allocation."
+  type        = string
+  default     = "1"
+
+  validation {
+    condition     = contains(["1", "2", "3"], var.availability_zone)
+    error_message = "availability_zone must be one of the East US zones: 1, 2, or 3."
+  }
+}
+
 variable "owner" {
   description = "Owner recorded in Azure resource tags for accountability and cost reporting."
   type        = string

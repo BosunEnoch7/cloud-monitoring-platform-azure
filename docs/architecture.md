@@ -59,6 +59,8 @@ A system-assigned managed identity is enabled but receives no role assignment by
 
 The initial public IP is a cost-and-accessibility tradeoff for the portfolio environment. Source-restricted NSG rules reduce exposure, but a future production evolution should remove direct administrative ingress in favor of private access.
 
+The VM and Standard public IP use an explicit East US availability zone. This avoids dependence on the constrained non-zonal allocation pool while keeping the entire environment in the required `eastus` region. A single zonal VM is still not highly available.
+
 ## Key decisions
 
 ### Single VM for the first implementation

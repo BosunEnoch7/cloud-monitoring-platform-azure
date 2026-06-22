@@ -7,6 +7,7 @@ The module boundary keeps compute lifecycle concerns separate from shared networ
 ## Resources and controls
 
 - Standard, statically allocated public IPv4 address
+- Explicit East US availability-zone placement for the VM and public IP
 - Network interface with a dynamically allocated private address
 - Ubuntu 22.04 LTS Gen2 virtual machine
 - Standard SSD OS disk

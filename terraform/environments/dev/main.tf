@@ -42,5 +42,6 @@ module "compute" {
   vm_size             = var.vm_size
   os_disk_size_gb     = var.os_disk_size_gb
   ubuntu_image        = var.ubuntu_image
+  availability_zone   = var.availability_zone
   tags                = local.common_tags
 }
