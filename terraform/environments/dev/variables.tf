@@ -44,7 +44,7 @@ variable "location" {
 variable "availability_zone" {
   description = "East US availability zone used for zonal compute and public IP allocation."
   type        = string
-  default     = "1"
+  default     = "2"
 
   validation {
     condition     = contains(["1", "2", "3"], var.availability_zone)

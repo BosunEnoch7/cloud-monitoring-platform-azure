@@ -16,4 +16,6 @@ This demonstrates why regional SKU presence does not guarantee live allocation c
 
 After the general-purpose SKU was also rejected from the regional pool, the design adopted explicit East US Zone 1 placement for both the VM and its Standard public IP. Azure capacity is partitioned by allocation scope, so a zonal request can succeed even when the non-zonal regional pool is constrained.
 
+Zone 1 accepted the zonal public IP but still rejected the D2as_v5 VM allocation. The next controlled retry moved both resources to Zone 2 while retaining the required East US region.
+
 Converting the existing public IP from non-zonal to zonal requires replacement. Azure correctly prevents deletion while a NIC still references the address. The compute module therefore gives the zonal IP a distinct name and uses Terraform's `create_before_destroy` lifecycle: create the zonal IP, update the NIC, and only then delete the old address. This preserves declarative ownership without manual portal changes.
