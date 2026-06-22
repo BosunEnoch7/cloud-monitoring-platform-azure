@@ -1,11 +1,15 @@
 resource "azurerm_public_ip" "this" {
-  name                = "${var.name_prefix}-pip"
+  name                = "${var.name_prefix}-pip-z${var.availability_zone}"
   resource_group_name = var.resource_group_name
   location            = var.location
   allocation_method   = "Static"
   sku                 = "Standard"
   zones               = [var.availability_zone]
   tags                = var.tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "azurerm_network_interface" "this" {
