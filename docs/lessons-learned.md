@@ -18,4 +18,6 @@ After the general-purpose SKU was also rejected from the regional pool, the desi
 
 Zone 1 accepted the zonal public IP but still rejected the D2as_v5 VM allocation. Zone 2 returned the same capacity restriction. The final East US-only retry moved both resources to Zone 3 while retaining the required East US region.
 
+Zone 3 also rejected `Standard_D2as_v5`. At that point the project stopped retrying the same SKU family and moved to a different general-purpose family, `Standard_D2s_v3`, while keeping East US and Zone 3 unchanged.
+
 Converting the existing public IP from non-zonal to zonal requires replacement. Azure correctly prevents deletion while a NIC still references the address. The compute module therefore gives the zonal IP a distinct name and uses Terraform's `create_before_destroy` lifecycle: create the zonal IP, update the NIC, and only then delete the old address. This preserves declarative ownership without manual portal changes.

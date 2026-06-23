@@ -11,7 +11,7 @@ Real `.tfvars` files are ignored. Only a sanitized `terraform.tfvars.example` wi
 - Name prefix: `<project_name>-<environment>`
 - Default prefix: `cloud-monitoring-dev`
 - Required owner, subscription ID, trusted administrator CIDR, and SSH public key
-- Default VM size: `Standard_D2as_v5` (2 vCPU, 8 GiB RAM)
+- Default VM size: `Standard_D2s_v3` (2 vCPU, 8 GiB RAM)
 - Default OS disk: 64 GiB
 - Default network: `10.20.0.0/16`
 - Default monitoring subnet: `10.20.1.0/24`
