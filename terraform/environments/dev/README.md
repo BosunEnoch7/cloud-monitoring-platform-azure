@@ -6,7 +6,7 @@ Real `.tfvars` files are ignored. Only a sanitized `terraform.tfvars.example` wi
 
 ## Current contract
 
-- Region: `eastus`
+- Region: `eastus2`
 - Availability zone: `3`
 - Name prefix: `<project_name>-<environment>`
 - Default prefix: `cloud-monitoring-dev`
@@ -18,7 +18,7 @@ Real `.tfvars` files are ignored. Only a sanitized `terraform.tfvars.example` wi
 
 The root creates the resource group and composes the network and compute modules. Monitoring software bootstrap is not yet included.
 
-`location` is validated as `eastus` so a mistaken variable override cannot split resources across regions. Administrative access rejects `0.0.0.0/0`.
+`location` is validated to the approved region set so a mistaken variable override cannot split resources across unsupported regions. The default is `eastus2`, selected as a documented capacity fallback after repeated East US VM allocation failures. Administrative access rejects `0.0.0.0/0`.
 
 ## Local preparation
 

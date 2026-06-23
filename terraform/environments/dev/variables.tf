@@ -33,22 +33,22 @@ variable "environment" {
 variable "location" {
   description = "Azure region for all resources in this environment."
   type        = string
-  default     = "eastus"
+  default     = "eastus2"
 
   validation {
-    condition     = var.location == "eastus"
-    error_message = "This project currently standardizes all Azure resources in the eastus region."
+    condition     = contains(["eastus", "eastus2"], var.location)
+    error_message = "location must be eastus or eastus2. eastus2 is the approved fallback when eastus capacity is unavailable."
   }
 }
 
 variable "availability_zone" {
-  description = "East US availability zone used for zonal compute and public IP allocation."
+  description = "Availability zone used for zonal compute and public IP allocation."
   type        = string
   default     = "3"
 
   validation {
     condition     = contains(["1", "2", "3"], var.availability_zone)
-    error_message = "availability_zone must be one of the East US zones: 1, 2, or 3."
+    error_message = "availability_zone must be one of the supported zones: 1, 2, or 3."
   }
 }
 

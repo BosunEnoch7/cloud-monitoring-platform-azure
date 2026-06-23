@@ -66,6 +66,7 @@ The initial implementation uses a single VM to control portfolio cost. This crea
 
 - [Architecture](docs/architecture.md)
 - [Documentation index](docs/README.md)
+- [Incident and blocker log](docs/incidents.md)
 - [Terraform structure](terraform/README.md)
 
 ## Licence

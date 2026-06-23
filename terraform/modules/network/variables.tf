@@ -18,8 +18,8 @@ variable "location" {
   type        = string
 
   validation {
-    condition     = var.location == "eastus"
-    error_message = "The network module is currently standardized on eastus."
+    condition     = contains(["eastus", "eastus2"], var.location)
+    error_message = "The network module currently supports eastus and eastus2."
   }
 }
 

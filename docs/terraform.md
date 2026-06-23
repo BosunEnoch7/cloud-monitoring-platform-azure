@@ -37,7 +37,7 @@ The root input model catches unsafe or malformed configuration before an Azure r
 
 - Azure subscription IDs must use UUID form.
 - The project name is short, lowercase, and suitable for predictable resource naming.
-- All resources are standardized in `eastus`.
+- Workload resources default to `eastus2` after a documented East US capacity exception.
 - Network values must be valid IPv4 CIDRs.
 - Administrative access cannot use `0.0.0.0/0`.
 - SSH access accepts a public OpenSSH key, not a private key.
