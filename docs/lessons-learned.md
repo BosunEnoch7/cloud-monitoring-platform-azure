@@ -24,4 +24,6 @@ Zone 3 also rejected `Standard_D2as_v5`. At that point the project stopped retry
 
 After `Standard_D2s_v3` also failed allocation in East US, the project moved the workload default to `eastus2` as an approved region fallback. This is a practical production-style decision: repeated capacity retries create delivery risk, while a documented fallback region preserves momentum and keeps the decision auditable.
 
+Changing an Azure resource group's location is not an in-place update. The first fallback apply exposed a naming issue: Terraform could not create a replacement resource group with the same name while the original group still existed. The fix was to include the location suffix in the workload resource group name so future region fallbacks have a clean target name.
+
 Converting the existing public IP from non-zonal to zonal requires replacement. Azure correctly prevents deletion while a NIC still references the address. The compute module therefore gives the zonal IP a distinct name and uses Terraform's `create_before_destroy` lifecycle: create the zonal IP, update the NIC, and only then delete the old address. This preserves declarative ownership without manual portal changes.

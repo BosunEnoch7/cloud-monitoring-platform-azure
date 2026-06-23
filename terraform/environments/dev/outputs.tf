@@ -3,6 +3,7 @@ output "deployment_context" {
   value = {
     environment = var.environment
     location    = var.location
+    region_rg   = azurerm_resource_group.this.name
     name_prefix = local.name_prefix
   }
 }

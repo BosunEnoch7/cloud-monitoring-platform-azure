@@ -10,13 +10,16 @@ Real `.tfvars` files are ignored. Only a sanitized `terraform.tfvars.example` wi
 - Availability zone: `3`
 - Name prefix: `<project_name>-<environment>`
 - Default prefix: `cloud-monitoring-dev`
+- Default resource group: `cloud-monitoring-dev-eastus2-rg`
 - Required owner, subscription ID, trusted administrator CIDR, and SSH public key
 - Default VM size: `Standard_D2s_v3` (2 vCPU, 8 GiB RAM)
 - Default OS disk: 64 GiB
 - Default network: `10.20.0.0/16`
 - Default monitoring subnet: `10.20.1.0/24`
 
-The root creates the resource group and composes the network and compute modules. Monitoring software bootstrap is not yet included.
+The root creates a region-specific resource group and composes the network and compute modules. Monitoring software bootstrap is not yet included.
+
+The resource group name includes the location suffix so a future region fallback does not try to recreate an Azure resource group in a different region with the same name.
 
 `location` is validated to the approved region set so a mistaken variable override cannot split resources across unsupported regions. The default is `eastus2`, selected as a documented capacity fallback after repeated East US VM allocation failures. Administrative access rejects `0.0.0.0/0`.
 

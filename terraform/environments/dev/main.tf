@@ -1,5 +1,6 @@
 locals {
-  name_prefix = "${var.project_name}-${var.environment}"
+  name_prefix     = "${var.project_name}-${var.environment}"
+  location_suffix = replace(lower(var.location), " ", "")
 
   common_tags = merge(
     var.additional_tags,
@@ -13,7 +14,7 @@ locals {
 }
 
 resource "azurerm_resource_group" "this" {
-  name     = "${local.name_prefix}-rg"
+  name     = "${local.name_prefix}-${local.location_suffix}-rg"
   location = var.location
   tags     = local.common_tags
 }

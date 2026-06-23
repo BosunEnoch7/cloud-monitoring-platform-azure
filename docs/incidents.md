@@ -83,6 +83,14 @@ This keeps the workload geographically close to the original target while avoidi
 
 Terraform was updated so the development workload defaults to `eastus2`. Because Azure resource groups cannot be moved between regions by changing metadata, Terraform may replace the partially-created East US workload resources during the next approved apply. This is acceptable for this project stage because the monitoring VM was never successfully created.
 
+The first region-fallback apply failed before creating the new resource group because the old resource group name still existed in Azure. The recovery was to make the workload resource group region-specific, for example:
+
+```text
+cloud-monitoring-dev-eastus2-rg
+```
+
+This avoids name collision during region fallback and makes the deployment location visible in Azure.
+
 ### Prevention and follow-up
 
 Future improvements:
