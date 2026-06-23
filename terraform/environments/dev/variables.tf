@@ -122,7 +122,7 @@ variable "ssh_public_key" {
 variable "vm_size" {
   description = "Azure VM SKU for the monitoring host."
   type        = string
-  default     = "Standard_D2as_v5"
+  default     = "Standard_D2s_v3"
 }
 
 variable "os_disk_size_gb" {

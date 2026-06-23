@@ -32,4 +32,6 @@ When Zone 1 also rejected `Standard_D2s_v3`, the project stopped rotating only z
 
 After East US 2 also rejected `Standard_D2as_v5`, the project moved to a different US region, `centralus`, after checking regional vCPU quota. This is the point where persistence becomes operational judgment: retrying the same constrained geography stops being useful.
 
+Central US accepted the network resources but rejected `Standard_D2as_v5` for VM allocation. This reinforces that quota, resource-provider availability, and live VM capacity are separate checks. The next retry used `Standard_D2s_v3` in Central US to test a different compute family pool.
+
 Converting the existing public IP from non-zonal to zonal requires replacement. Azure correctly prevents deletion while a NIC still references the address. The compute module therefore gives the zonal IP a distinct name and uses Terraform's `create_before_destroy` lifecycle: create the zonal IP, update the NIC, and only then delete the old address. This preserves declarative ownership without manual portal changes.

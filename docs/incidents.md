@@ -97,6 +97,8 @@ East US 2 Zone 1 also rejected `Standard_D2s_v3`. After testing multiple zones f
 
 East US 2 also rejected `Standard_D2as_v5`. At this point the evidence showed broad capacity pressure across the East US / East US 2 target area for the requested VM class. The next mitigation moved the workload default to `centralus`, with quota checked before the change.
 
+Central US successfully created the resource group and network layer, but rejected `Standard_D2as_v5` at VM allocation time. The next controlled retry kept Central US and changed the VM SKU to `Standard_D2s_v3`, using a different compute family pool while preserving the 2-vCPU/8-GiB sizing target.
+
 ### Prevention and follow-up
 
 Future improvements:
