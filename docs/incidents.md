@@ -93,6 +93,8 @@ This avoids name collision during region fallback and makes the deployment locat
 
 The next apply successfully created the East US 2 resource group, virtual network, subnet, NSG, public IP, and NIC. VM creation then failed because `Standard_D2s_v3` was unavailable in East US 2 Zone 3. The next controlled retry moved the default availability zone from Zone 3 to Zone 1 while keeping the same region and SKU.
 
+East US 2 Zone 1 also rejected `Standard_D2s_v3`. After testing multiple zones for the same SKU family, the next mitigation changed the VM size to `Standard_D2as_v5`, preserving the 2-vCPU/8-GiB sizing goal while moving to a different compute family.
+
 ### Prevention and follow-up
 
 Future improvements:
