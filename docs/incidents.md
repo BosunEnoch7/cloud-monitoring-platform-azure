@@ -196,3 +196,37 @@ Before final portfolio completion, review this log and confirm:
 - Preventive improvements are reflected in `docs/future-improvements.md`.
 - Troubleshooting steps are reflected in `docs/troubleshooting.md`.
 - Lessons are summarized in `docs/lessons-learned.md`.
+
+## Future incident entry template
+
+```markdown
+## Incident NNN: Short title
+
+| Field | Details |
+|---|---|
+| Date encountered | YYYY-MM-DD |
+| Area affected | Terraform / Azure / Linux / Prometheus / Grafana / Alertmanager / CI/CD |
+| Severity | Low / Medium / High |
+| Status | Open / Mitigated / Resolved |
+| Impact | What was blocked or degraded |
+
+### Symptom
+
+What we observed.
+
+### Investigation
+
+Commands, logs, workflow output, or Azure/GitHub evidence checked.
+
+### Treatment
+
+What was changed, retried, rolled back, or documented.
+
+### Prevention and follow-up
+
+How this should be avoided or detected faster next time.
+
+### Portfolio lesson
+
+What this demonstrates about real-world operations.
+```
