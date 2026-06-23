@@ -30,4 +30,6 @@ After the East US 2 network layer was created, VM allocation still failed for `S
 
 When Zone 1 also rejected `Standard_D2s_v3`, the project stopped rotating only zones and changed compute families to `Standard_D2as_v5`. This is a better recovery pattern than repeatedly applying the same constrained SKU.
 
+After East US 2 also rejected `Standard_D2as_v5`, the project moved to a different US region, `centralus`, after checking regional vCPU quota. This is the point where persistence becomes operational judgment: retrying the same constrained geography stops being useful.
+
 Converting the existing public IP from non-zonal to zonal requires replacement. Azure correctly prevents deletion while a NIC still references the address. The compute module therefore gives the zonal IP a distinct name and uses Terraform's `create_before_destroy` lifecycle: create the zonal IP, update the NIC, and only then delete the old address. This preserves declarative ownership without manual portal changes.

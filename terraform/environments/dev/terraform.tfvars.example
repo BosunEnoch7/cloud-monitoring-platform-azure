@@ -3,7 +3,7 @@
 
 subscription_id = "00000000-0000-0000-0000-000000000000"
 owner           = "your-name"
-location        = "eastus2"
+location        = "centralus"
 
 # Find your current public IPv4 address and keep the /32 suffix.
 # 192.0.2.0/24 is reserved for documentation and will not grant real access.

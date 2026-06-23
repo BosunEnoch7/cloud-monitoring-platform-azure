@@ -95,6 +95,8 @@ The next apply successfully created the East US 2 resource group, virtual networ
 
 East US 2 Zone 1 also rejected `Standard_D2s_v3`. After testing multiple zones for the same SKU family, the next mitigation changed the VM size to `Standard_D2as_v5`, preserving the 2-vCPU/8-GiB sizing goal while moving to a different compute family.
 
+East US 2 also rejected `Standard_D2as_v5`. At this point the evidence showed broad capacity pressure across the East US / East US 2 target area for the requested VM class. The next mitigation moved the workload default to `centralus`, with quota checked before the change.
+
 ### Prevention and follow-up
 
 Future improvements:

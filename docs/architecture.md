@@ -59,7 +59,7 @@ A system-assigned managed identity is enabled but receives no role assignment by
 
 The initial public IP is a cost-and-accessibility tradeoff for the portfolio environment. Source-restricted NSG rules reduce exposure, but a future production evolution should remove direct administrative ingress in favor of private access.
 
-The VM and Standard public IP use an explicit availability zone. The workload now defaults to `eastus2` as an approved capacity fallback after repeated East US allocation failures. A single zonal VM is still not highly available, and the selected zone may change when Azure reports live capacity restrictions.
+The VM and Standard public IP use an explicit availability zone. The workload now defaults to `centralus` as an approved capacity fallback after repeated East US and East US 2 allocation failures. A single zonal VM is still not highly available, and the selected zone may change when Azure reports live capacity restrictions.
 
 ## Key decisions
 

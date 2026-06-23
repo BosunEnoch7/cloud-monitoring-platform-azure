@@ -33,11 +33,11 @@ variable "environment" {
 variable "location" {
   description = "Azure region for all resources in this environment."
   type        = string
-  default     = "eastus2"
+  default     = "centralus"
 
   validation {
-    condition     = contains(["eastus", "eastus2"], var.location)
-    error_message = "location must be eastus or eastus2. eastus2 is the approved fallback when eastus capacity is unavailable."
+    condition     = contains(["eastus", "eastus2", "centralus"], var.location)
+    error_message = "location must be eastus, eastus2, or centralus. centralus is the approved fallback after East US capacity exhaustion."
   }
 }
 

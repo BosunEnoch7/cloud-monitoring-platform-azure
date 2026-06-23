@@ -6,11 +6,11 @@ Real `.tfvars` files are ignored. Only a sanitized `terraform.tfvars.example` wi
 
 ## Current contract
 
-- Region: `eastus2`
+- Region: `centralus`
 - Availability zone: `1`
 - Name prefix: `<project_name>-<environment>`
 - Default prefix: `cloud-monitoring-dev`
-- Default resource group: `cloud-monitoring-dev-eastus2-rg`
+- Default resource group: `cloud-monitoring-dev-centralus-rg`
 - Required owner, subscription ID, trusted administrator CIDR, and SSH public key
 - Default VM size: `Standard_D2as_v5` (2 vCPU, 8 GiB RAM)
 - Default OS disk: 64 GiB
@@ -21,7 +21,7 @@ The root creates a region-specific resource group and composes the network and c
 
 The resource group name includes the location suffix so a future region fallback does not try to recreate an Azure resource group in a different region with the same name.
 
-`location` is validated to the approved region set so a mistaken variable override cannot split resources across unsupported regions. The default is `eastus2`, selected as a documented capacity fallback after repeated East US VM allocation failures. Administrative access rejects `0.0.0.0/0`.
+`location` is validated to the approved region set so a mistaken variable override cannot split resources across unsupported regions. The default is `centralus`, selected as a documented capacity fallback after repeated East US and East US 2 VM allocation failures. Administrative access rejects `0.0.0.0/0`.
 
 ## Local preparation
 
