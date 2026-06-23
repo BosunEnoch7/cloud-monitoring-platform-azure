@@ -26,4 +26,6 @@ After `Standard_D2s_v3` also failed allocation in East US, the project moved the
 
 Changing an Azure resource group's location is not an in-place update. The first fallback apply exposed a naming issue: Terraform could not create a replacement resource group with the same name while the original group still existed. The fix was to include the location suffix in the workload resource group name so future region fallbacks have a clean target name.
 
+After the East US 2 network layer was created, VM allocation still failed for `Standard_D2s_v3` in Zone 3. This confirmed that capacity can be constrained at the zone level even when the region, quota, and networking are valid. The next retry moved the zonal default to Zone 1.
+
 Converting the existing public IP from non-zonal to zonal requires replacement. Azure correctly prevents deletion while a NIC still references the address. The compute module therefore gives the zonal IP a distinct name and uses Terraform's `create_before_destroy` lifecycle: create the zonal IP, update the NIC, and only then delete the old address. This preserves declarative ownership without manual portal changes.

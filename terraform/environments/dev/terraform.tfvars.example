@@ -16,3 +16,6 @@ ssh_public_key = "ssh-ed25519 REPLACE_WITH_YOUR_PUBLIC_KEY your-email@example.co
 additional_tags = {
   cost_center = "portfolio"
 }
+
+# Optional override when Azure reports live zonal capacity restrictions.
+# availability_zone = "1"
