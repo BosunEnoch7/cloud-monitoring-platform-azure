@@ -7,7 +7,7 @@ Real `.tfvars` files are ignored. Only a sanitized `terraform.tfvars.example` wi
 ## Current contract
 
 - Region: `eastus`
-- Availability zone: `2`
+- Availability zone: `3`
 - Name prefix: `<project_name>-<environment>`
 - Default prefix: `cloud-monitoring-dev`
 - Required owner, subscription ID, trusted administrator CIDR, and SSH public key
