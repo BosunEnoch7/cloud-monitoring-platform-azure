@@ -359,6 +359,32 @@ Repeat the live outage after Alertmanager is installed. Capture the pending, fir
 
 Break-glass operational access should not depend entirely on the same network path being tested. Azure Run Command provided a controlled recovery channel without widening SSH exposure.
 
+## Incident 010: Grafana JSON CI false failure
+
+| Field | Details |
+|---|---|
+| Date encountered | 2026-06-25 |
+| Area affected | Observability GitHub Actions validation |
+| Severity | Low |
+| Status | Resolved |
+| Impact | The first observability validation workflow failed even though the Grafana dashboard JSON was valid. |
+
+### Symptom
+
+The Grafana JSON step exited with code `123` through `xargs`.
+
+### Investigation
+
+The command used `jq --exit-status empty`. The `empty` filter intentionally emits no output, while `--exit-status` treats no result as a non-zero condition. `xargs` converted the child failure into exit code `123`.
+
+### Treatment
+
+The workflow now runs `jq empty` without `--exit-status`. Invalid JSON still causes a parser failure, while valid JSON completes successfully.
+
+### Portfolio lesson
+
+Validation commands must be tested for their exit semantics, not just their visible output. A CI failure can originate in the validator wrapper rather than the artifact being validated.
+
 ## End-of-project review checklist
 
 Before final portfolio completion, review this log and confirm:
