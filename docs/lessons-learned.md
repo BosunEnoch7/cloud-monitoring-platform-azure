@@ -59,3 +59,9 @@ The installer also detects the installed pinned version before downloading. A ve
 Alertmanager can be installed and its local transport path validated before SMTP credentials exist. A temporary no-notification receiver allowed Prometheus discovery, alert ingestion, grouping, and resolution to be tested without committing placeholders or requesting a password through chat.
 
 This separates two failure domains: local alert delivery and external SMTP delivery. When email is enabled, any remaining failure is easier to isolate to provider authentication, TLS, or mailbox policy.
+
+## Provision dashboards instead of clicking them into existence
+
+Grafana's Prometheus data source, dashboard provider, and node dashboard are all version-controlled. The runtime API confirmed that Grafana loaded the dashboard as provisioned and marked the data source read-only.
+
+This preserves reproducibility and makes every PromQL visualization reviewable. Grafana installation increased root-disk use to roughly 3.8 GB of 62 GB and memory use remained comfortably within the 8 GiB VM profile.

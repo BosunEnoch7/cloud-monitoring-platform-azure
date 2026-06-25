@@ -52,3 +52,20 @@ Prometheus applies whichever limit is reached first. This prevents unbounded loc
 ## Network boundary
 
 Prometheus and Node Exporter listen only on the VM loopback interface. They are not exposed through Azure NSG rules or UFW. Grafana will query Prometheus locally after it is installed.
+
+## Grafana dashboard
+
+Grafana `13.0.2` is provisioned from Git and queries the loopback Prometheus endpoint through its server-side proxy.
+
+The `Cloud Monitoring - Node Overview` dashboard includes:
+
+- current CPU usage
+- current memory usage
+- root filesystem usage
+- system uptime
+- CPU and memory trends
+- 1-, 5-, and 15-minute system load
+- network receive and transmit throughput
+- filesystem usage by mount point
+
+The dashboard refreshes every 30 seconds and defaults to a six-hour time range. Grafana's data-source health endpoint confirmed that it successfully queried the Prometheus API.

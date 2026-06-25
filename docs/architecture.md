@@ -47,6 +47,8 @@ Only administrative access should cross the public boundary:
 
 Grafana should eventually be served through an authenticated HTTPS endpoint. Monitoring ports must not be opened broadly to the internet.
 
+Grafana currently listens on the host interface because it is the operator-facing UI. Access is constrained twice: the Azure NSG permits only the administrator CIDR, and UFW permits that same `/32` on port `3000`. Prometheus, Alertmanager, and Node Exporter remain loopback-only.
+
 The NSG is associated with the monitoring subnet, making the subnet the baseline network-policy boundary. SSH and Grafana use separate rules so each access path can be reviewed, changed, or removed independently.
 
 Azure's built-in NSG defaults deny unsolicited inbound internet traffic that is not explicitly allowed. We do not add redundant deny rules because they would add policy noise without strengthening the effective default behavior.

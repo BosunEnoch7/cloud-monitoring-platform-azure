@@ -93,3 +93,28 @@ Expected state:
 - Prometheus lists Alertmanager under `activeAlertmanagers`.
 
 The runtime file `/etc/alertmanager/alertmanager.yml` may contain SMTP credentials and is readable only by `root` and the `alertmanager` group. The repository's local runtime counterpart is ignored by Git.
+
+## Grafana access and checks
+
+Grafana is available on port `3000`, restricted by both the Azure NSG and UFW to the current administrator `/32`.
+
+```bash
+systemctl status grafana-server
+curl http://127.0.0.1:3000/api/health
+```
+
+The administrator password is generated once during installation and stored at:
+
+```text
+/etc/grafana/admin_password
+```
+
+Retrieve it only through an authenticated SSH session:
+
+```bash
+sudo cat /etc/grafana/admin_password
+```
+
+Do not copy it into Git, documentation, screenshots, or chat.
+
+If the administrator public IP changes, update the Terraform CIDR and the UFW Grafana rule before attempting browser access.

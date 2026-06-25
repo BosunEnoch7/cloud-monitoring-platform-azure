@@ -1,0 +1,119 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"max": 100, "min": 0, "unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [{"expr": "100 * (1 - avg(rate(node_cpu_seconds_total{job=\"node\",mode=\"idle\"}[5m])))", "refId": "A"}],
+      "title": "CPU Usage",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"max": 100, "min": 0, "unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 0},
+      "id": 2,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [{"expr": "100 * (1 - node_memory_MemAvailable_bytes{job=\"node\"} / node_memory_MemTotal_bytes{job=\"node\"})", "refId": "A"}],
+      "title": "Memory Usage",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"max": 100, "min": 0, "unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 6, "x": 12, "y": 0},
+      "id": 3,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [{"expr": "100 * (1 - node_filesystem_avail_bytes{job=\"node\",mountpoint=\"/\"} / node_filesystem_size_bytes{job=\"node\",mountpoint=\"/\"})", "refId": "A"}],
+      "title": "Root Filesystem Usage",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "s"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 6, "x": 18, "y": 0},
+      "id": 4,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [{"expr": "time() - node_boot_time_seconds{job=\"node\"}", "refId": "A"}],
+      "title": "System Uptime",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 5},
+      "id": 5,
+      "options": {"legend": {"calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"expr": "100 * (1 - avg by (instance) (rate(node_cpu_seconds_total{job=\"node\",mode=\"idle\"}[5m])))", "legendFormat": "CPU", "refId": "A"}],
+      "title": "CPU Usage Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 5},
+      "id": 6,
+      "options": {"legend": {"calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"expr": "100 * (1 - node_memory_MemAvailable_bytes{job=\"node\"} / node_memory_MemTotal_bytes{job=\"node\"})", "legendFormat": "Memory", "refId": "A"}],
+      "title": "Memory Usage Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 13},
+      "id": 7,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "node_load1{job=\"node\"}", "legendFormat": "1m", "refId": "A"},
+        {"expr": "node_load5{job=\"node\"}", "legendFormat": "5m", "refId": "B"},
+        {"expr": "node_load15{job=\"node\"}", "legendFormat": "15m", "refId": "C"}
+      ],
+      "title": "System Load",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "Bps"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 13},
+      "id": 8,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [
+        {"expr": "sum by (device) (rate(node_network_receive_bytes_total{job=\"node\",device!=\"lo\"}[5m]))", "legendFormat": "{{device}} receive", "refId": "A"},
+        {"expr": "sum by (device) (rate(node_network_transmit_bytes_total{job=\"node\",device!=\"lo\"}[5m]))", "legendFormat": "{{device}} transmit", "refId": "B"}
+      ],
+      "title": "Network Throughput",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 13},
+      "id": 9,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"expr": "100 * (1 - node_filesystem_avail_bytes{job=\"node\",fstype!~\"tmpfs|overlay|squashfs|nsfs\"} / node_filesystem_size_bytes{job=\"node\",fstype!~\"tmpfs|overlay|squashfs|nsfs\"})", "legendFormat": "{{mountpoint}}", "refId": "A"}],
+      "title": "Filesystem Usage",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 42,
+  "tags": ["azure", "linux", "node-exporter", "portfolio"],
+  "templating": {"list": []},
+  "time": {"from": "now-6h", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Cloud Monitoring - Node Overview",
+  "uid": "cloud-node-overview",
+  "version": 1
+}

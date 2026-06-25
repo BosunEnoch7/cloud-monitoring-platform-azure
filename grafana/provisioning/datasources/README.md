@@ -1,3 +1,3 @@
 # Data-source provisioning
 
-The provisioned Prometheus data source will be defined here. Credentials or other secrets must not be committed.
+Prometheus is provisioned as the default, read-only Grafana data source at `http://127.0.0.1:9090`. No credentials are required because both services run on the same protected host.

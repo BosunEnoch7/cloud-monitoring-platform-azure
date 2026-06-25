@@ -1,3 +1,9 @@
 # Dashboards
 
-Version-controlled Grafana dashboard definitions will live here. Dashboard documentation and screenshots will explain each visualization and the operational question it answers.
+`node-overview.json` answers the core operational questions:
+
+- Is CPU or memory pressure increasing?
+- Is the root disk or another filesystem approaching capacity?
+- Is network throughput abnormal?
+- Is system load sustained?
+- How long has the host been running?
