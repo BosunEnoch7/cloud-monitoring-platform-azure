@@ -6,9 +6,9 @@ The project is designed as a portfolio demonstration of infrastructure as code, 
 
 ## Project status
 
-**Current phase:** Prometheus metrics collection and alert evaluation operational.
+**Current phase:** Prometheus alert delivery to Alertmanager operational; email activation pending.
 
-GitHub Actions deployed the Central US development environment through an OIDC-authenticated, plan-first workflow with a protected apply approval. Prometheus `3.12.0` scrapes both local targets every 15 seconds and evaluates tested resource and availability alerts. Both monitoring endpoints are loopback-only.
+GitHub Actions deployed the Central US development environment through an OIDC-authenticated, plan-first workflow with a protected apply approval. Prometheus `3.12.0` evaluates tested alerts and sends them to Alertmanager `0.33.0`. All monitoring service endpoints are loopback-only. SMTP email routing awaits the operator's non-secret email details and separately supplied app password.
 
 ## Planned architecture
 
@@ -59,6 +59,7 @@ The initial implementation uses a single VM to control portfolio cost. This crea
 - [x] Install and validate Node Exporter
 - [x] Configure Prometheus to scrape Node Exporter and itself
 - [x] Add and unit-test host and monitoring availability alerts
+- [x] Install Alertmanager and validate local alert delivery
 - [ ] Provision Grafana dashboards
 - [ ] Configure Alertmanager email routing
 - [x] Add validation and protected deployment workflows in GitHub Actions

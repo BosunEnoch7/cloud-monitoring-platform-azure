@@ -53,3 +53,9 @@ Successful Terraform apply was only the start of operational verification. SSH c
 Prometheus passed checksum and configuration validation but was not ready at the exact instant of the first health request. Systemd and journal evidence showed a normal one-second TSDB initialization period. Replacing the single request with a bounded readiness retry removed the false failure without hiding genuine startup problems.
 
 The installer also detects the installed pinned version before downloading. A verification rerun skipped the 145 MB archive, reapplied configuration, restarted services safely, and passed all health checks. Idempotency should cover both correctness and operational efficiency.
+
+## Separate alert transport from notification credentials
+
+Alertmanager can be installed and its local transport path validated before SMTP credentials exist. A temporary no-notification receiver allowed Prometheus discovery, alert ingestion, grouping, and resolution to be tested without committing placeholders or requesting a password through chat.
+
+This separates two failure domains: local alert delivery and external SMTP delivery. When email is enabled, any remaining failure is easier to isolate to provider authentication, TLS, or mailbox policy.

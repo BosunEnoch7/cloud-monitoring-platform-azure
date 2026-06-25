@@ -76,3 +76,20 @@ promtool check config /etc/prometheus/prometheus.yml
 ```
 
 The installation script is safe to rerun. It skips the binary download when the pinned version is already installed, reapplies configuration and systemd settings, validates the configuration, and uses bounded readiness retries.
+
+## Alertmanager service checks
+
+```bash
+systemctl status alertmanager
+curl http://127.0.0.1:9093/-/ready
+amtool --alertmanager.url=http://127.0.0.1:9093 alert query
+```
+
+Expected state:
+
+- Alertmanager is active and enabled.
+- The readiness endpoint returns `OK`.
+- Port `9093` listens only on `127.0.0.1`.
+- Prometheus lists Alertmanager under `activeAlertmanagers`.
+
+The runtime file `/etc/alertmanager/alertmanager.yml` may contain SMTP credentials and is readable only by `root` and the `alertmanager` group. The repository's local runtime counterpart is ignored by Git.

@@ -1,6 +1,6 @@
 # Alerting documentation
 
-Prometheus evaluates five initial alert rules. Alertmanager routing and email delivery are added in the next phase.
+Prometheus evaluates five initial alert rules and sends firing alerts to Alertmanager `0.33.0` on `127.0.0.1:9093`.
 
 | Alert | Trigger | Waiting period | Severity |
 |---|---|---:|---|
@@ -43,3 +43,35 @@ After deployment, the Prometheus runtime API reported all five rules with `healt
 A Node Exporter outage exercise was initiated by stopping the service. The later observation step was interrupted by administrator IP rotation and local connectivity timeouts. Azure Run Command restored Node Exporter and reported the service active.
 
 The unit test proves the rule expression and two-minute transition mathematically. A complete live firing-and-recovery capture remains on the final incident-test checklist and will be repeated when Alertmanager is configured, so the same exercise also validates notification delivery.
+
+## Alertmanager deployment
+
+Alertmanager is installed as a dedicated non-login system user and managed by systemd. It is active, enabled at boot, and listens only on loopback.
+
+Prometheus reports the following active Alertmanager endpoint:
+
+```text
+http://127.0.0.1:9093/api/v2/alerts
+```
+
+A synthetic `PortfolioPipelineTest` alert was injected with the official `amtool` client. Alertmanager reported it active with the expected labels and annotations. The same alert fingerprint was then updated with an expired end time, and `amtool` confirmed no matching active alert remained.
+
+This proves local ingestion, grouping, receiver selection, and resolution. The temporary runtime receiver intentionally performs no external notification.
+
+## Email activation status
+
+The committed `alertmanager.yml.example` defines:
+
+- grouped email notifications
+- critical and warning repeat intervals
+- resolved notifications
+- warning inhibition when the matching critical alert exists
+
+The active runtime configuration remains Git-ignored. Email activation requires:
+
+- SMTP provider and host
+- sender and recipient addresses
+- SMTP username
+- an application password or token supplied outside Git
+
+The application password must never be posted in project documentation, committed, or embedded in the example file.
