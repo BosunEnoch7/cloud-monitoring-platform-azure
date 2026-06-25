@@ -1,0 +1,27 @@
+groups:
+  - name: monitoring-availability
+    interval: 15s
+    rules:
+      - alert: NodeExporterDown
+        expr: up{job="node"} == 0
+        for: 2m
+        keep_firing_for: 2m
+        labels:
+          severity: critical
+          component: node-exporter
+        annotations:
+          summary: Node Exporter is unavailable on {{ $labels.instance }}
+          description: Prometheus has been unable to scrape Node Exporter for two minutes.
+          runbook_url: https://github.com/BosunEnoch7/cloud-monitoring-platform-azure/blob/main/docs/troubleshooting.md
+
+      - alert: PrometheusSelfScrapeFailed
+        expr: up{job="prometheus"} == 0
+        for: 2m
+        keep_firing_for: 2m
+        labels:
+          severity: critical
+          component: prometheus
+        annotations:
+          summary: Prometheus self-scrape is failing
+          description: Prometheus has been unable to scrape its own metrics endpoint for two minutes.
+          runbook_url: https://github.com/BosunEnoch7/cloud-monitoring-platform-azure/blob/main/docs/troubleshooting.md

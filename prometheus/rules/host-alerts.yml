@@ -1,0 +1,48 @@
+groups:
+  - name: host-resources
+    interval: 15s
+    rules:
+      - alert: HighCpuUsage
+        expr: 100 * (1 - avg by (instance) (rate(node_cpu_seconds_total{job="node", mode="idle"}[5m]))) > 80
+        for: 5m
+        keep_firing_for: 2m
+        labels:
+          severity: warning
+          component: compute
+        annotations:
+          summary: High CPU usage on {{ $labels.instance }}
+          description: CPU usage has exceeded 80% for five minutes.
+          runbook_url: https://github.com/BosunEnoch7/cloud-monitoring-platform-azure/blob/main/docs/troubleshooting.md
+
+      - alert: HighMemoryUsage
+        expr: 100 * (1 - (node_memory_MemAvailable_bytes{job="node"} / node_memory_MemTotal_bytes{job="node"})) > 80
+        for: 5m
+        keep_firing_for: 2m
+        labels:
+          severity: warning
+          component: memory
+        annotations:
+          summary: High memory usage on {{ $labels.instance }}
+          description: Available-memory calculations show usage above 80% for five minutes.
+          runbook_url: https://github.com/BosunEnoch7/cloud-monitoring-platform-azure/blob/main/docs/troubleshooting.md
+
+      - alert: HighFilesystemUsage
+        expr: |
+          100 * (
+            1 - (
+              node_filesystem_avail_bytes{job="node",fstype!~"tmpfs|overlay|squashfs|nsfs"}
+              /
+              node_filesystem_size_bytes{job="node",fstype!~"tmpfs|overlay|squashfs|nsfs"}
+            )
+          ) > 85
+          and on (instance, device, mountpoint)
+          node_filesystem_readonly{job="node"} == 0
+        for: 10m
+        keep_firing_for: 5m
+        labels:
+          severity: critical
+          component: filesystem
+        annotations:
+          summary: Filesystem usage is high on {{ $labels.instance }}
+          description: Filesystem {{ $labels.mountpoint }} has exceeded 85% usage for ten minutes.
+          runbook_url: https://github.com/BosunEnoch7/cloud-monitoring-platform-azure/blob/main/docs/troubleshooting.md

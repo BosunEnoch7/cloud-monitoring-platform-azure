@@ -36,7 +36,7 @@ sudo ./scripts/bootstrap-monitoring-host.sh
 Run it with the version-controlled configuration file:
 
 ```bash
-sudo ./scripts/install-prometheus.sh ./prometheus/prometheus.yml
+sudo ./scripts/install-prometheus.sh ./prometheus/prometheus.yml ./prometheus/rules
 ```
 - Blob versioning and 14-day blob/container soft delete
 - Shared-key access disabled after container creation

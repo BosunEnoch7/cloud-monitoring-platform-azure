@@ -6,14 +6,15 @@ PROMETHEUS_SHA256="20da47f8e5303f74aecb78edd7f7e39041dac08ac4939dba75efd7a900ae8
 PROMETHEUS_ARCHIVE="prometheus-${PROMETHEUS_VERSION}.linux-amd64.tar.gz"
 PROMETHEUS_URL="https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/${PROMETHEUS_ARCHIVE}"
 CONFIG_SOURCE="${1:-}"
+RULES_SOURCE="${2:-}"
 
 if [[ "${EUID}" -ne 0 ]]; then
   echo "This script must be run as root." >&2
   exit 1
 fi
 
-if [[ -z "${CONFIG_SOURCE}" || ! -f "${CONFIG_SOURCE}" ]]; then
-  echo "Usage: sudo $0 /path/to/prometheus.yml" >&2
+if [[ -z "${CONFIG_SOURCE}" || ! -f "${CONFIG_SOURCE}" || -z "${RULES_SOURCE}" || ! -d "${RULES_SOURCE}" ]]; then
+  echo "Usage: sudo $0 /path/to/prometheus.yml /path/to/rules-directory" >&2
   exit 1
 fi
 
@@ -52,6 +53,7 @@ if ! id prometheus >/dev/null 2>&1; then
 fi
 
 install -d -o root -g prometheus -m 0750 /etc/prometheus
+install -d -o root -g prometheus -m 0750 /etc/prometheus/rules
 install -d -o prometheus -g prometheus -m 0750 /var/lib/prometheus
 
 installed_version=""
@@ -85,6 +87,8 @@ else
 fi
 
 install -o root -g prometheus -m 0640 "${CONFIG_SOURCE}" /etc/prometheus/prometheus.yml
+find /etc/prometheus/rules -maxdepth 1 -type f -name '*.yml' -delete
+find "${RULES_SOURCE}" -maxdepth 1 -type f -name '*.yml' -exec install -o root -g prometheus -m 0640 {} /etc/prometheus/rules/ \;
 
 echo "==> Restricting Node Exporter to the local host"
 cat >/etc/default/prometheus-node-exporter <<'EOF'
@@ -130,7 +134,8 @@ echo "==> Starting Node Exporter and Prometheus"
 systemctl daemon-reload
 systemctl enable --now prometheus-node-exporter
 systemctl restart prometheus-node-exporter
-systemctl enable --now prometheus
+systemctl enable prometheus
+systemctl restart prometheus
 
 echo "==> Verifying local health endpoints"
 wait_for_url http://127.0.0.1:9100/metrics

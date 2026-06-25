@@ -307,6 +307,58 @@ The installer health check was changed from a single immediate request to a boun
 
 Service startup and service readiness are different events. Deployment automation should tolerate normal initialization time while retaining a clear upper timeout.
 
+## Incident 008: Validated rules not loaded into the running process
+
+| Field | Details |
+|---|---|
+| Date encountered | 2026-06-25 |
+| Area affected | Prometheus configuration deployment |
+| Severity | Low |
+| Status | Resolved |
+| Impact | Alert files existed on disk and passed validation, but the running Prometheus process still had zero loaded rule groups. |
+
+### Symptom
+
+`promtool check config` found two rule files and five valid rules, but the Prometheus runtime rules API returned an empty group list.
+
+### Investigation
+
+The installer used `systemctl enable --now prometheus`. The `--now` operation starts an inactive unit, but it does not restart an already-running unit after configuration changes. Journal timestamps confirmed the process had not reloaded.
+
+### Treatment
+
+The installer now enables the unit and explicitly restarts Prometheus after successful validation. Runtime API verification remains a required post-deployment check.
+
+### Portfolio lesson
+
+Configuration validity, files on disk, and runtime state are three separate verification layers. Production changes are complete only when the running service confirms the intended configuration is active.
+
+## Incident 009: Alert exercise interrupted by administrator IP rotation
+
+| Field | Details |
+|---|---|
+| Date encountered | 2026-06-25 |
+| Area affected | Live alert testing and SSH access |
+| Severity | Low |
+| Status | Mitigated; alert exercise scheduled for repetition |
+| Impact | The Node Exporter outage was started, but the firing-state observation could not be completed over SSH. |
+
+### Symptom
+
+During the two-minute `NodeExporterDown` exercise, the workstation address changed from `102.91.103.173` to `102.91.78.75`. The Azure NSG correctly stopped accepting SSH from the old address.
+
+### Treatment
+
+Azure VM Run Command was used as an independent management path to start Node Exporter. The service reported active. The GitHub Terraform CIDR variable was then updated to the new `/32`, and protected Terraform run `28186011923` applied successfully.
+
+### Follow-up
+
+Repeat the live outage after Alertmanager is installed. Capture the pending, firing, notification, and resolved states as one complete incident exercise.
+
+### Portfolio lesson
+
+Break-glass operational access should not depend entirely on the same network path being tested. Azure Run Command provided a controlled recovery channel without widening SSH exposure.
+
 ## End-of-project review checklist
 
 Before final portfolio completion, review this log and confirm:

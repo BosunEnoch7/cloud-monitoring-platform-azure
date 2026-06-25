@@ -1,0 +1,120 @@
+rule_files:
+  - ../host-alerts.yml
+  - ../availability-alerts.yml
+
+evaluation_interval: 1m
+
+tests:
+  - name: host resource thresholds fire after sustained breach
+    interval: 1m
+    input_series:
+      - series: node_cpu_seconds_total{job="node",instance="monitoring:9100",cpu="0",mode="idle"}
+        values: 0+6x15
+      - series: node_memory_MemAvailable_bytes{job="node",instance="monitoring:9100"}
+        values: 15x16
+      - series: node_memory_MemTotal_bytes{job="node",instance="monitoring:9100"}
+        values: 100x16
+      - series: node_filesystem_avail_bytes{job="node",instance="monitoring:9100",device="/dev/sda1",mountpoint="/",fstype="ext4"}
+        values: 10x16
+      - series: node_filesystem_size_bytes{job="node",instance="monitoring:9100",device="/dev/sda1",mountpoint="/",fstype="ext4"}
+        values: 100x16
+      - series: node_filesystem_readonly{job="node",instance="monitoring:9100",device="/dev/sda1",mountpoint="/",fstype="ext4"}
+        values: 0x16
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: HighCpuUsage
+        exp_alerts:
+          - exp_labels:
+              component: compute
+              instance: monitoring:9100
+              severity: warning
+            exp_annotations:
+              summary: High CPU usage on monitoring:9100
+              description: CPU usage has exceeded 80% for five minutes.
+              runbook_url: https://github.com/BosunEnoch7/cloud-monitoring-platform-azure/blob/main/docs/troubleshooting.md
+      - eval_time: 6m
+        alertname: HighMemoryUsage
+        exp_alerts:
+          - exp_labels:
+              component: memory
+              instance: monitoring:9100
+              job: node
+              severity: warning
+            exp_annotations:
+              summary: High memory usage on monitoring:9100
+              description: Available-memory calculations show usage above 80% for five minutes.
+              runbook_url: https://github.com/BosunEnoch7/cloud-monitoring-platform-azure/blob/main/docs/troubleshooting.md
+      - eval_time: 11m
+        alertname: HighFilesystemUsage
+        exp_alerts:
+          - exp_labels:
+              component: filesystem
+              device: /dev/sda1
+              fstype: ext4
+              instance: monitoring:9100
+              job: node
+              mountpoint: /
+              severity: critical
+            exp_annotations:
+              summary: Filesystem usage is high on monitoring:9100
+              description: Filesystem / has exceeded 85% usage for ten minutes.
+              runbook_url: https://github.com/BosunEnoch7/cloud-monitoring-platform-azure/blob/main/docs/troubleshooting.md
+
+  - name: availability alerts distinguish healthy and failed targets
+    interval: 1m
+    input_series:
+      - series: up{job="node",instance="monitoring:9100"}
+        values: 0x6
+      - series: up{job="prometheus",instance="monitoring:9090"}
+        values: 0x6
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: NodeExporterDown
+        exp_alerts:
+          - exp_labels:
+              component: node-exporter
+              instance: monitoring:9100
+              job: node
+              severity: critical
+            exp_annotations:
+              summary: Node Exporter is unavailable on monitoring:9100
+              description: Prometheus has been unable to scrape Node Exporter for two minutes.
+              runbook_url: https://github.com/BosunEnoch7/cloud-monitoring-platform-azure/blob/main/docs/troubleshooting.md
+      - eval_time: 3m
+        alertname: PrometheusSelfScrapeFailed
+        exp_alerts:
+          - exp_labels:
+              component: prometheus
+              instance: monitoring:9090
+              job: prometheus
+              severity: critical
+            exp_annotations:
+              summary: Prometheus self-scrape is failing
+              description: Prometheus has been unable to scrape its own metrics endpoint for two minutes.
+              runbook_url: https://github.com/BosunEnoch7/cloud-monitoring-platform-azure/blob/main/docs/troubleshooting.md
+
+  - name: resource alerts remain inactive below thresholds
+    interval: 1m
+    input_series:
+      - series: node_cpu_seconds_total{job="node",instance="monitoring:9100",cpu="0",mode="idle"}
+        values: 0+54x15
+      - series: node_memory_MemAvailable_bytes{job="node",instance="monitoring:9100"}
+        values: 50x16
+      - series: node_memory_MemTotal_bytes{job="node",instance="monitoring:9100"}
+        values: 100x16
+      - series: node_filesystem_avail_bytes{job="node",instance="monitoring:9100",device="/dev/sda1",mountpoint="/",fstype="ext4"}
+        values: 50x16
+      - series: node_filesystem_size_bytes{job="node",instance="monitoring:9100",device="/dev/sda1",mountpoint="/",fstype="ext4"}
+        values: 100x16
+      - series: node_filesystem_readonly{job="node",instance="monitoring:9100",device="/dev/sda1",mountpoint="/",fstype="ext4"}
+        values: 0x16
+    alert_rule_test:
+      - eval_time: 11m
+        alertname: HighCpuUsage
+        exp_alerts: []
+      - eval_time: 11m
+        alertname: HighMemoryUsage
+        exp_alerts: []
+      - eval_time: 11m
+        alertname: HighFilesystemUsage
+        exp_alerts: []

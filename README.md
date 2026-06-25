@@ -6,9 +6,9 @@ The project is designed as a portfolio demonstration of infrastructure as code, 
 
 ## Project status
 
-**Current phase:** Prometheus metrics collection operational.
+**Current phase:** Prometheus metrics collection and alert evaluation operational.
 
-GitHub Actions deployed the Central US development environment through an OIDC-authenticated, plan-first workflow with a protected apply approval. The Ubuntu VM is hardened, and Prometheus `3.12.0` successfully scrapes both its own metrics and Node Exporter every 15 seconds. Both monitoring endpoints are loopback-only.
+GitHub Actions deployed the Central US development environment through an OIDC-authenticated, plan-first workflow with a protected apply approval. Prometheus `3.12.0` scrapes both local targets every 15 seconds and evaluates tested resource and availability alerts. Both monitoring endpoints are loopback-only.
 
 ## Planned architecture
 
@@ -58,6 +58,7 @@ The initial implementation uses a single VM to control portfolio cost. This crea
 - [x] Bootstrap and harden the Ubuntu host
 - [x] Install and validate Node Exporter
 - [x] Configure Prometheus to scrape Node Exporter and itself
+- [x] Add and unit-test host and monitoring availability alerts
 - [ ] Provision Grafana dashboards
 - [ ] Configure Alertmanager email routing
 - [x] Add validation and protected deployment workflows in GitHub Actions
