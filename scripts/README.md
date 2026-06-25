@@ -21,12 +21,22 @@ It currently installs:
 - Node Exporter
 - UFW with SSH allowed
 
-The script does not install Prometheus, Grafana, or Alertmanager yet. Those services are added in later phases so each layer can be tested and documented separately.
+The script does not install Prometheus, Grafana, or Alertmanager. Those services are added with separate, focused installers so each layer can be tested and documented independently.
 
 Run from the VM after copying the repository or script:
 
 ```bash
 sudo ./scripts/bootstrap-monitoring-host.sh
+```
+
+## Prometheus installation
+
+`install-prometheus.sh` installs the pinned official Prometheus release, validates its checksum and configuration, and manages it with a hardened systemd unit.
+
+Run it with the version-controlled configuration file:
+
+```bash
+sudo ./scripts/install-prometheus.sh ./prometheus/prometheus.yml
 ```
 - Blob versioning and 14-day blob/container soft delete
 - Shared-key access disabled after container creation

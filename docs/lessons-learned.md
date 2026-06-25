@@ -47,3 +47,9 @@ Repository variables consumed as Terraform complex types must preserve valid JSO
 ## Layered host verification
 
 Successful Terraform apply was only the start of operational verification. SSH confirmed the host identity and Azure kernel, systemd confirmed Node Exporter was active and enabled, the local `/metrics` endpoint returned real host metrics, and UFW confirmed default-deny inbound behavior. Multiple signals provide stronger evidence than relying on deployment status alone.
+
+## Prometheus readiness and idempotency
+
+Prometheus passed checksum and configuration validation but was not ready at the exact instant of the first health request. Systemd and journal evidence showed a normal one-second TSDB initialization period. Replacing the single request with a bounded readiness retry removed the false failure without hiding genuine startup problems.
+
+The installer also detects the installed pinned version before downloading. A verification rerun skipped the 145 MB archive, reapplied configuration, restarted services safely, and passed all health checks. Idempotency should cover both correctness and operational efficiency.

@@ -281,6 +281,32 @@ DNS resolution was tested independently and recovered. The deployment was verifi
 
 Operational verification should use independent signals. A single failing client or control-plane path should not determine workload health.
 
+## Incident 007: Prometheus readiness startup race
+
+| Field | Details |
+|---|---|
+| Date encountered | 2026-06-25 |
+| Area affected | Prometheus installation automation |
+| Severity | Low |
+| Status | Resolved |
+| Impact | The installer returned a failure even though Prometheus started successfully moments later. |
+
+### Symptom
+
+The checksum and `promtool` validation passed, but the immediate request to `127.0.0.1:9090/-/ready` received `connection refused`.
+
+### Investigation
+
+Systemd showed Prometheus active and enabled. The journal showed that Prometheus needed roughly one second to initialize its TSDB, load configuration, and begin listening. Both Prometheus and Node Exporter were then confirmed on loopback-only listeners.
+
+### Treatment
+
+The installer health check was changed from a single immediate request to a bounded retry loop with a 30-second timeout. Reruns also detect the installed pinned version and avoid downloading the 145 MB archive again.
+
+### Portfolio lesson
+
+Service startup and service readiness are different events. Deployment automation should tolerate normal initialization time while retaining a clear upper timeout.
+
 ## End-of-project review checklist
 
 Before final portfolio completion, review this log and confirm:

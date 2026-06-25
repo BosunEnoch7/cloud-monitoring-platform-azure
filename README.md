@@ -6,9 +6,9 @@ The project is designed as a portfolio demonstration of infrastructure as code, 
 
 ## Project status
 
-**Current phase:** Azure infrastructure deployed; Ubuntu host bootstrapped and Node Exporter validated.
+**Current phase:** Prometheus metrics collection operational.
 
-GitHub Actions deployed the Central US development environment through an OIDC-authenticated, plan-first workflow with a protected apply approval. The Ubuntu VM is running, unattended security updates and UFW are enabled, and Node Exporter is active on the local-only metrics endpoint. Prometheus configuration is the next implementation phase.
+GitHub Actions deployed the Central US development environment through an OIDC-authenticated, plan-first workflow with a protected apply approval. The Ubuntu VM is hardened, and Prometheus `3.12.0` successfully scrapes both its own metrics and Node Exporter every 15 seconds. Both monitoring endpoints are loopback-only.
 
 ## Planned architecture
 
@@ -57,7 +57,7 @@ The initial implementation uses a single VM to control portfolio cost. This crea
 - [x] Implement and deploy Azure resources through Terraform
 - [x] Bootstrap and harden the Ubuntu host
 - [x] Install and validate Node Exporter
-- [ ] Configure Prometheus to scrape Node Exporter
+- [x] Configure Prometheus to scrape Node Exporter and itself
 - [ ] Provision Grafana dashboards
 - [ ] Configure Alertmanager email routing
 - [x] Add validation and protected deployment workflows in GitHub Actions

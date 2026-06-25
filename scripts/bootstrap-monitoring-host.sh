@@ -29,7 +29,11 @@ echo "==> Enabling unattended security updates"
 systemctl enable --now unattended-upgrades
 
 echo "==> Enabling Node Exporter"
+cat >/etc/default/prometheus-node-exporter <<'EOF'
+ARGS="--web.listen-address=127.0.0.1:9100"
+EOF
 systemctl enable --now prometheus-node-exporter
+systemctl restart prometheus-node-exporter
 
 echo "==> Configuring local firewall"
 ufw allow OpenSSH

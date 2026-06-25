@@ -50,3 +50,29 @@ SSH and Grafana access are restricted by Terraform to explicit administrator CID
 5. Retest SSH after the apply succeeds.
 
 Never solve an address change by allowing `0.0.0.0/0` to SSH.
+
+## Prometheus service checks
+
+Prometheus is installed as a dedicated `prometheus` system user and managed by systemd.
+
+```bash
+systemctl status prometheus
+systemctl status prometheus-node-exporter
+curl http://127.0.0.1:9090/-/ready
+curl http://127.0.0.1:9090/api/v1/targets
+```
+
+Expected state:
+
+- Both services are active and enabled.
+- The readiness endpoint succeeds.
+- The `prometheus` and `node` scrape targets report `health: up`.
+- Ports `9090` and `9100` listen only on `127.0.0.1`.
+
+Validate the deployed configuration before a restart:
+
+```bash
+promtool check config /etc/prometheus/prometheus.yml
+```
+
+The installation script is safe to rerun. It skips the binary download when the pinned version is already installed, reapplies configuration and systemd settings, validates the configuration, and uses bounded readiness retries.
