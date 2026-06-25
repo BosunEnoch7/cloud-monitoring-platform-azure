@@ -38,6 +38,16 @@ Run it with the version-controlled configuration file:
 ```bash
 sudo ./scripts/install-prometheus.sh ./prometheus/prometheus.yml ./prometheus/rules
 ```
+
+## Alertmanager installation
+
+`install-alertmanager.sh` installs the pinned official Alertmanager release, verifies its checksum, validates the supplied runtime configuration with `amtool`, and deploys a hardened loopback-only systemd service.
+
+The configuration passed to the script contains SMTP credentials and must come from an ignored file or protected secret source:
+
+```bash
+sudo ./scripts/install-alertmanager.sh ./alertmanager/alertmanager.yml
+```
 - Blob versioning and 14-day blob/container soft delete
 - Shared-key access disabled after container creation
 - Separate Microsoft Entra applications for planning and applying

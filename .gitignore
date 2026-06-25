@@ -36,6 +36,7 @@ secrets/
 prometheus/data/
 grafana/data/
 alertmanager/data/
+alertmanager/alertmanager.yml
 
 # Operating system and editor files
 .DS_Store
