@@ -4,7 +4,7 @@ Routine service checks, upgrades, backups, access procedures, and cost controls 
 
 ## Ubuntu host bootstrap
 
-After Terraform creates the VM and SSH access is verified, the first operational task is to prepare the host.
+The Central US development VM was bootstrapped successfully on 2026-06-25 after Terraform deployment and SSH verification.
 
 The bootstrap script is:
 
@@ -28,5 +28,25 @@ curl http://127.0.0.1:9100/metrics
 Expected result:
 
 - `prometheus-node-exporter` is active.
+- `prometheus-node-exporter` is enabled at boot.
 - `/metrics` returns host metrics.
 - Port `9100` is not open to the public internet.
+
+The verified host state is:
+
+- Hostname: `monitoring`
+- Node Exporter: active and enabled
+- UFW: active, default-deny incoming
+- Public host port: SSH only, additionally restricted by the Azure NSG
+
+## Administrator IP rotation
+
+SSH and Grafana access are restricted by Terraform to explicit administrator CIDRs. If the workstation public address changes:
+
+1. Determine the new public IPv4 address.
+2. Update `TF_ADMIN_SOURCE_CIDRS_JSON` in GitHub using valid JSON, for example `["203.0.113.10/32"]`.
+3. Dispatch the Terraform Apply workflow with confirmation `deploy`.
+4. Review the saved plan and approve the protected `dev` environment.
+5. Retest SSH after the apply succeeds.
+
+Never solve an address change by allowing `0.0.0.0/0` to SSH.

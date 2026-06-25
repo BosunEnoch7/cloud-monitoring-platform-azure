@@ -35,3 +35,15 @@ After East US 2 also rejected `Standard_D2as_v5`, the project moved to a differe
 Central US accepted the network resources but rejected `Standard_D2as_v5` for VM allocation. This reinforces that quota, resource-provider availability, and live VM capacity are separate checks. The next retry used `Standard_D2s_v3` in Central US to test a different compute family pool.
 
 Converting the existing public IP from non-zonal to zonal requires replacement. Azure correctly prevents deletion while a NIC still references the address. The compute module therefore gives the zonal IP a distinct name and uses Terraform's `create_before_destroy` lifecycle: create the zonal IP, update the NIC, and only then delete the old address. This preserves declarative ownership without manual portal changes.
+
+The final successful allocation used `Standard_D2s_v3` in Central US Zone 1. This resolved the capacity incident without abandoning the desired 2-vCPU/8-GiB host profile.
+
+## Administrative access allowlists
+
+Restricting SSH to one public `/32` address prevented access when the workstation address changed. That timeout was expected security behavior, not VM failure. Updating the GitHub variable and applying the NSG change through the protected Terraform workflow restored access without opening port `22` globally.
+
+Repository variables consumed as Terraform complex types must preserve valid JSON/HCL syntax. Passing the CIDR list through a native command-line argument removed its quotation marks; passing the exact value through standard input preserved it. The failed workflow stopped during planning, before any infrastructure mutation.
+
+## Layered host verification
+
+Successful Terraform apply was only the start of operational verification. SSH confirmed the host identity and Azure kernel, systemd confirmed Node Exporter was active and enabled, the local `/metrics` endpoint returned real host metrics, and UFW confirmed default-deny inbound behavior. Multiple signals provide stronger evidence than relying on deployment status alone.

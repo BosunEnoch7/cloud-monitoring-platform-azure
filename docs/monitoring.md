@@ -1,6 +1,6 @@
 # Monitoring documentation
 
-Metric sources, scrape behavior, recording strategy, retention, and dashboard interpretation will be documented here during the monitoring phase.
+Node Exporter is now installed and validated. Scrape behavior, retention, rules, and dashboard interpretation will be added as Prometheus and Grafana are deployed.
 # Monitoring design
 
 The first monitored target is the Ubuntu VM itself through Node Exporter.
@@ -17,12 +17,12 @@ Node Exporter exposes Linux host metrics such as:
 
 The exporter listens on port `9100`. In this project, that port should not be exposed publicly. Prometheus will collect the metrics and Grafana will visualize them later.
 
-## First validation target
+## Node Exporter validation
 
-Before installing Prometheus, validate Node Exporter directly on the VM:
+Node Exporter was validated directly on the VM before installing Prometheus:
 
 ```bash
 curl http://127.0.0.1:9100/metrics
 ```
 
-This confirms the operating-system metrics layer is working before we add the Prometheus scrape layer.
+The endpoint returned CPU, memory, filesystem, network, load, and boot-time series. This confirms the operating-system metrics layer is working before we add the Prometheus scrape layer.

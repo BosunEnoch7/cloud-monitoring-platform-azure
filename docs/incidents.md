@@ -22,11 +22,11 @@ Each entry should include:
 
 | Field | Details |
 |---|---|
-| Date encountered | During Azure Terraform deployment phase |
+| Date encountered | 2026-06-21 through 2026-06-23 |
 | Area affected | Azure compute deployment |
 | Severity | Medium |
-| Status | Mitigation approved: move workload deployment from East US to East US 2 |
-| Impact | Terraform successfully created supporting infrastructure, but the Ubuntu monitoring VM could not be allocated. Monitoring services cannot be installed until the VM exists. |
+| Status | Resolved |
+| Impact | Terraform successfully created supporting infrastructure, but repeated Azure capacity failures delayed creation of the Ubuntu monitoring VM. |
 
 ### Symptom
 
@@ -99,6 +99,17 @@ East US 2 also rejected `Standard_D2as_v5`. At this point the evidence showed br
 
 Central US successfully created the resource group and network layer, but rejected `Standard_D2as_v5` at VM allocation time. The next controlled retry kept Central US and changed the VM SKU to `Standard_D2s_v3`, using a different compute family pool while preserving the 2-vCPU/8-GiB sizing target.
 
+The controlled retry succeeded on 2026-06-23 with:
+
+```text
+Region: Central US
+Availability zone: 1
+VM size: Standard_D2s_v3
+Resource group: cloud-monitoring-dev-centralus-rg
+```
+
+GitHub Actions run `28044710581` completed both the saved-plan and protected-apply jobs successfully. The Ubuntu VM was subsequently reached over SSH and bootstrapped.
+
 ### Prevention and follow-up
 
 Future improvements:
@@ -168,7 +179,7 @@ The apply identity temporarily received subscription-level `Contributor` for boo
 
 Follow-up after the first successful deployment:
 
-1. Assign `Contributor` to the apply identity at `cloud-monitoring-dev-rg`.
+1. Assign `Contributor` to the apply identity at `cloud-monitoring-dev-centralus-rg`.
 2. Verify GitHub Actions plan/apply still works.
 3. Remove the subscription-scoped `Contributor` assignment.
 
@@ -201,6 +212,74 @@ repo:BosunEnoch7/cloud-monitoring-platform-azure
 ### Portfolio lesson
 
 OIDC federation is secure because it is exact. Repo renames, branch changes, and environment names can break deployment authentication unless trust subjects are updated deliberately.
+
+## Incident 005: SSH blocked after administrator IP changed
+
+| Field | Details |
+|---|---|
+| Date encountered | 2026-06-25 |
+| Area affected | Azure networking and administrative access |
+| Severity | Low |
+| Status | Resolved |
+| Impact | The VM was healthy, but SSH from the administrator workstation timed out. |
+
+### Symptom
+
+TCP connectivity to port `22` failed after deployment even though the VM and public IP had been created successfully.
+
+### Investigation
+
+The NSG allowed only the previously recorded administrator address, `102.91.93.8/32`. The workstation's current public address was `102.91.103.173`, so Azure correctly rejected the connection.
+
+### Treatment
+
+The GitHub repository variable `TF_ADMIN_SOURCE_CIDRS_JSON` was updated to the new `/32` address. The Terraform apply workflow generated a new plan, paused at the protected `dev` environment, and applied the reviewed NSG-only update after approval.
+
+The first workflow retry failed safely at plan time because a command-line update had removed the JSON quotation marks from the variable. The value was corrected through standard input as:
+
+```json
+["102.91.103.173/32"]
+```
+
+The second plan and apply succeeded in GitHub Actions run `28167787774`. SSH then connected successfully and reported hostname `monitoring`.
+
+### Prevention and follow-up
+
+- Add a small validation command or script that checks the CIDR variable is valid JSON before dispatching Terraform.
+- Document the administrator-IP rotation procedure in the operations guide.
+- Keep SSH restricted to explicit `/32` addresses rather than opening it broadly.
+
+### Portfolio lesson
+
+A failed access test can prove a security control is working. The correct response is a reviewed allowlist update, not temporarily exposing SSH to the internet.
+
+## Incident 006: Local Azure CLI verification connectivity
+
+| Field | Details |
+|---|---|
+| Date encountered | 2026-06-25 |
+| Area affected | Local operational verification |
+| Severity | Low |
+| Status | Mitigated |
+| Impact | Read-only Azure CLI inventory commands could not initially verify the deployment. |
+
+### Symptom
+
+Azure CLI reported a DNS resolution failure for `login.microsoftonline.com`, and a later resource inventory request timed out.
+
+### Treatment
+
+DNS resolution was tested independently and recovered. The deployment was verified through the successful GitHub Actions jobs and Terraform outputs, followed by direct SSH and service-level checks on the VM.
+
+### Prevention and follow-up
+
+- Retry transient control-plane checks with bounded timeouts.
+- Keep more than one verification path: CI evidence, Azure inventory, SSH, and service health.
+- Do not mistake a local client connectivity failure for an Azure workload failure.
+
+### Portfolio lesson
+
+Operational verification should use independent signals. A single failing client or control-plane path should not determine workload health.
 
 ## End-of-project review checklist
 
