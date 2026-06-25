@@ -148,3 +148,18 @@ Third-party GitHub Actions are pinned to immutable commit SHAs. Version comments
 ## Secret boundary
 
 Subscription, tenant, and client identifiers are configuration identifiers rather than authentication secrets, but they should still be managed consistently as repository or environment variables. Credentials, private keys, SMTP passwords, and Terraform state must never be committed.
+
+## Observability configuration validation
+
+The `Observability Validate` workflow runs when monitoring configuration, Grafana assets, or shell installers change.
+
+It performs:
+
+1. Bash syntax validation for host installers.
+2. `promtool check config` with Prometheus `3.12.0`.
+3. `promtool test rules` for alert firing and non-firing cases.
+4. `amtool check-config` with Alertmanager `0.33.0`.
+5. JSON parsing for every version-controlled Grafana dashboard.
+6. YAML parsing for Prometheus, Alertmanager, and Grafana provisioning files.
+
+The Alertmanager example is rendered with CI-only placeholder addresses before validation. No SMTP password or production mailbox value is required by the workflow.

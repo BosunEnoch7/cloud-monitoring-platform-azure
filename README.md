@@ -63,6 +63,7 @@ The initial implementation uses a single VM to control portfolio cost. This crea
 - [x] Provision Grafana and the infrastructure dashboard
 - [ ] Configure Alertmanager email routing
 - [x] Add validation and protected deployment workflows in GitHub Actions
+- [x] Add observability configuration validation in GitHub Actions
 - [ ] Exercise failure scenarios and document incident response
 
 ## Documentation

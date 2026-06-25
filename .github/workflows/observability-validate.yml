@@ -1,0 +1,93 @@
+name: Observability Validate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "prometheus/**"
+      - "alertmanager/**"
+      - "grafana/**"
+      - "scripts/*.sh"
+      - ".github/workflows/observability-validate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "prometheus/**"
+      - "alertmanager/**"
+      - "grafana/**"
+      - "scripts/*.sh"
+      - ".github/workflows/observability-validate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: observability-validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate monitoring configuration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Validate shell scripts
+        run: find scripts -maxdepth 1 -type f -name '*.sh' -print0 | xargs -0 -n1 bash -n
+
+      - name: Validate Prometheus configuration
+        run: |
+          docker run --rm \
+            --entrypoint /bin/promtool \
+            --volume "$PWD/prometheus:/etc/prometheus:ro" \
+            prom/prometheus:v3.12.0 \
+            check config /etc/prometheus/prometheus.yml
+
+      - name: Test Prometheus alert rules
+        run: |
+          docker run --rm \
+            --entrypoint /bin/promtool \
+            --volume "$PWD/prometheus:/work:ro" \
+            --workdir /work/rules/tests \
+            prom/prometheus:v3.12.0 \
+            test rules alert-rules.test.yml
+
+      - name: Validate Alertmanager example
+        run: |
+          sed \
+            -e 's/SMTP_HOST:SMTP_PORT/smtp.example.com:587/' \
+            -e 's/SENDER_EMAIL/sender@example.com/' \
+            -e 's/SMTP_USERNAME/sender@example.com/' \
+            -e 's/REPLACE_WITH_APP_PASSWORD/ci-placeholder/' \
+            -e 's/RECIPIENT_EMAIL/recipient@example.com/' \
+            alertmanager/alertmanager.yml.example > /tmp/alertmanager.yml
+
+          docker run --rm \
+            --entrypoint /bin/amtool \
+            --volume "/tmp/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro" \
+            prom/alertmanager:v0.33.0 \
+            check-config /etc/alertmanager/alertmanager.yml
+
+      - name: Validate Grafana dashboard JSON
+        run: |
+          find grafana/dashboards -maxdepth 1 -type f -name '*.json' -print0 |
+            xargs -0 -n1 jq --exit-status empty
+
+      - name: Validate provisioning YAML syntax
+        run: |
+          ruby -e '
+            require "yaml"
+            ARGV.each do |file|
+              YAML.safe_load(File.read(file), aliases: true)
+              puts "valid: #{file}"
+            end
+          ' \
+            prometheus/prometheus.yml \
+            prometheus/rules/host-alerts.yml \
+            prometheus/rules/availability-alerts.yml \
+            alertmanager/alertmanager.yml.example \
+            grafana/provisioning/datasources/prometheus.yml \
+            grafana/provisioning/dashboards/default.yml
