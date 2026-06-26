@@ -6,11 +6,11 @@ The project is designed as a portfolio demonstration of infrastructure as code, 
 
 ## Project status
 
-**Current phase:** Portfolio-ready core platform complete; SMTP email activation pending.
+**Current phase:** Azure portfolio implementation complete.
 
 GitHub Actions deployed the Central US environment through an OIDC-authenticated, plan-first workflow. Prometheus `3.12.0` collects metrics and sends alerts to Alertmanager `0.33.0`. Grafana `13.0.2` provides a provisioned infrastructure dashboard. Internal monitoring endpoints are loopback-only; Grafana is restricted to the administrator CIDR.
 
-The only intentionally unfinished item is external SMTP email delivery. The Alertmanager local pipeline is installed and validated, but email credentials were not supplied and should never be committed or pasted into chat.
+External SMTP delivery is retained as an optional extension because it requires a private third-party credential. The complete local alert path—from Prometheus rules to Alertmanager ingestion and resolution—has been installed and validated.
 
 ## Planned architecture
 
@@ -76,19 +76,21 @@ The initial implementation uses a single VM to control portfolio cost. This crea
 - [x] Add and unit-test host and monitoring availability alerts
 - [x] Install Alertmanager and validate local alert delivery
 - [x] Provision Grafana and the infrastructure dashboard
-- [ ] Configure external Alertmanager SMTP email routing
+- [ ] Optional: configure external Alertmanager SMTP email routing
 - [x] Add validation and protected deployment workflows in GitHub Actions
 - [x] Add observability configuration validation in GitHub Actions
 - [x] Exercise implementation blockers and document incident response
 
 ## Final status
 
-Portfolio-ready completion: approximately **95%**.
+The portfolio project is **complete for recruiter review**.
 
-Remaining optional production enhancement:
+Optional production enhancements:
 
 - activate SMTP email notifications with an app password or SMTP token supplied outside Git
 - repeat the alert exercise and capture the delivered email screenshot
+- add TLS and private operator access
+- evolve the single-node design into a highly available deployment
 
 ## Documentation
 

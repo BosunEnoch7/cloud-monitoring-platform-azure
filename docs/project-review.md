@@ -57,9 +57,9 @@ Final apply identity permissions:
 - Direct public-IP access remains a portfolio convenience.
 - Grafana is HTTP-only for now.
 - Prometheus cannot alert on its own total outage without an external observer.
-- SMTP email delivery is pending operator-provided credentials.
+- External SMTP delivery is an optional credential-dependent extension.
 
-## Remaining optional task
+## Optional extension
 
 To complete the email requirement, provide:
 
