@@ -1,3 +1,3 @@
 # Grafana provisioning
 
-This directory will contain Grafana provisioning definitions for Prometheus data sources and file-backed dashboards.
+This directory contains Grafana provisioning definitions for the Prometheus data source and file-backed dashboards.

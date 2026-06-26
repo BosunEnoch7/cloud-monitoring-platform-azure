@@ -1,13 +1,13 @@
 # Prometheus
 
-This area contains the Prometheus scrape configuration and will contain version-controlled alert rules.
+This area contains the Prometheus scrape configuration and version-controlled alert rules.
 
 Prometheus scrapes:
 
 - its own health and runtime metrics on `127.0.0.1:9090`
 - Node Exporter host metrics on `127.0.0.1:9100`
 
-Both endpoints are loopback-only. Grafana and Alertmanager will run on the same host during the initial cost-controlled architecture.
+Both endpoints are loopback-only. Grafana and Alertmanager run on the same host during the initial cost-controlled architecture.
 
 The global scrape interval is 15 seconds. This gives responsive dashboards and alerts without producing unnecessary load for one development target.
 

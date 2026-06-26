@@ -6,9 +6,11 @@ The project is designed as a portfolio demonstration of infrastructure as code, 
 
 ## Project status
 
-**Current phase:** Full metrics, alerting, and dashboard stack operational; email activation pending.
+**Current phase:** Portfolio-ready core platform complete; SMTP email activation pending.
 
 GitHub Actions deployed the Central US environment through an OIDC-authenticated, plan-first workflow. Prometheus `3.12.0` collects metrics and sends alerts to Alertmanager `0.33.0`. Grafana `13.0.2` provides a provisioned infrastructure dashboard. Internal monitoring endpoints are loopback-only; Grafana is restricted to the administrator CIDR.
+
+The only intentionally unfinished item is external SMTP email delivery. The Alertmanager local pipeline is installed and validated, but email credentials were not supplied and should never be committed or pasted into chat.
 
 ## Planned architecture
 
@@ -42,6 +44,19 @@ The initial implementation uses a single VM to control portfolio cost. This crea
 | `screenshots/` | Curated evidence of deployments, dashboards, and alerts |
 | `.github/workflows/` | Terraform CI/CD workflows added in a later phase |
 
+## What this project demonstrates
+
+- Modular Terraform infrastructure on Azure
+- Remote state and GitHub Actions OIDC authentication
+- Protected plan/apply workflow with manual approval
+- Least-privilege RBAC reduction after bootstrap
+- Ubuntu host bootstrap and hardening
+- Node Exporter, Prometheus, Alertmanager, and Grafana operations
+- Tested Prometheus alert rules
+- Provisioned Grafana dashboards
+- Observability configuration validation in CI
+- Incident, troubleshooting, and lessons-learned documentation
+
 ## Engineering principles
 
 - Infrastructure changes are reviewed through Terraform plans.
@@ -61,16 +76,26 @@ The initial implementation uses a single VM to control portfolio cost. This crea
 - [x] Add and unit-test host and monitoring availability alerts
 - [x] Install Alertmanager and validate local alert delivery
 - [x] Provision Grafana and the infrastructure dashboard
-- [ ] Configure Alertmanager email routing
+- [ ] Configure external Alertmanager SMTP email routing
 - [x] Add validation and protected deployment workflows in GitHub Actions
 - [x] Add observability configuration validation in GitHub Actions
-- [ ] Exercise failure scenarios and document incident response
+- [x] Exercise implementation blockers and document incident response
+
+## Final status
+
+Portfolio-ready completion: approximately **95%**.
+
+Remaining optional production enhancement:
+
+- activate SMTP email notifications with an app password or SMTP token supplied outside Git
+- repeat the alert exercise and capture the delivered email screenshot
 
 ## Documentation
 
 - [Architecture](docs/architecture.md)
 - [Documentation index](docs/README.md)
 - [Incident and blocker log](docs/incidents.md)
+- [Final project review](docs/project-review.md)
 - [Terraform structure](terraform/README.md)
 
 ## Licence

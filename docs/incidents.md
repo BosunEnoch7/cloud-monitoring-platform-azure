@@ -385,6 +385,32 @@ The workflow now runs `jq empty` without `--exit-status`. Invalid JSON still cau
 
 Validation commands must be tested for their exit semantics, not just their visible output. A CI failure can originate in the validator wrapper rather than the artifact being validated.
 
+## Incident 011: Bootstrap IAM exception closed
+
+| Field | Details |
+|---|---|
+| Date encountered | 2026-06-25 |
+| Area affected | Azure IAM |
+| Severity | Low |
+| Status | Resolved |
+| Impact | The deployment identity initially had subscription-wide Contributor so Terraform could create the workload resource group. |
+
+### Treatment
+
+After the workload resource group existed, the apply identity was granted `Contributor` only on:
+
+```text
+cloud-monitoring-dev-centralus-rg
+```
+
+The temporary subscription-wide `Contributor` assignment was removed. A protected Terraform apply run, `28196178635`, succeeded afterward, proving the reduced permission model still supports deployment.
+
+The identity retains `Storage Blob Data Contributor` on the Terraform state storage account so it can read and write remote state.
+
+### Portfolio lesson
+
+Bootstrap privileges should be temporary. The mature pattern is to document the exception, reduce scope once resources exist, and verify the delivery pipeline still works under least privilege.
+
 ## End-of-project review checklist
 
 Before final portfolio completion, review this log and confirm:

@@ -1,6 +1,6 @@
 # Operations guide
 
-Routine service checks, upgrades, backups, access procedures, and cost controls will be documented here as the platform becomes operational.
+This guide records routine service checks, access procedures, validation commands, and operational controls for the platform.
 
 ## Ubuntu host bootstrap
 
@@ -14,7 +14,7 @@ scripts/bootstrap-monitoring-host.sh
 
 It installs the baseline Linux operations packages, enables unattended security updates, enables Node Exporter, and verifies that the local metrics endpoint responds on port `9100`.
 
-Node Exporter is intentionally not exposed publicly in the network security group. Prometheus will scrape it from the same host or from an approved private path, depending on the final topology.
+Node Exporter is intentionally not exposed publicly in the network security group. Prometheus scrapes it from the same host over loopback.
 
 ## Initial service checks
 

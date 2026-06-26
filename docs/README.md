@@ -2,7 +2,7 @@
 
 This directory is the operational knowledge base for the project.
 
-Planned documents include:
+Documents include:
 
 - Terraform deployment and state management
 - GitHub Actions and deployment controls
@@ -27,3 +27,4 @@ Documentation will be added alongside each implementation phase so it remains ev
 - [Incidents and blockers](incidents.md)
 - [Lessons learned](lessons-learned.md)
 - [Future improvements](future-improvements.md)
+- [Final project review](project-review.md)
