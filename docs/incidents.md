@@ -411,6 +411,47 @@ The identity retains `Storage Blob Data Contributor` on the Terraform state stor
 
 Bootstrap privileges should be temporary. The mature pattern is to document the exception, reduce scope once resources exist, and verify the delivery pipeline still works under least privilege.
 
+## Incident 012: Grafana access blocked by repeated IP drift
+
+| Field | Details |
+|---|---|
+| Date encountered | 2026-06-27 |
+| Area affected | Azure networking / Linux firewall / Terraform CI/CD |
+| Severity | Low |
+| Status | Resolved |
+| Impact | The Grafana dashboard could not be opened from the administrator workstation. |
+
+### Symptom
+
+The VM was running, but TCP connections to `20.83.32.114:3000` timed out.
+
+### Investigation
+
+The workstation address no longer matched the administrator `/32` stored in the Azure NSG. During recovery, the ISP changed the address a second time. After Terraform updated the NSG, Grafana was still blocked because UFW retained the older Grafana-specific source address.
+
+The first attempt to update `TF_ADMIN_SOURCE_CIDRS_JSON` also exposed a Windows CLI quoting issue: GitHub received `[102.91.5.192/32]` rather than valid JSON. Terraform rejected this during planning, so no infrastructure change occurred.
+
+### Treatment
+
+1. Updated the GitHub variable through the GitHub JSON API to preserve the required quotes.
+2. Ran the protected Terraform workflow and approved the reviewed NSG-only plan.
+3. Repeated the rotation when the ISP address changed again.
+4. Used Azure VM Run Command to replace the stale UFW port `3000` rule with the current `/32`.
+5. Verified TCP connectivity and an HTTP `200` response from `/login`.
+
+Successful recovery workflow: `28281568823`.
+
+### Prevention and follow-up
+
+- Keep `/32` allowlisting for the current portfolio deployment.
+- Treat both Azure NSG and UFW as required checks during access incidents.
+- Prefer a stable private-access solution such as a VPN, Tailscale, or Azure Bastion for longer-lived environments.
+- Pass structured GitHub variable values through JSON input when automating from PowerShell.
+
+### Portfolio lesson
+
+Layered controls can produce the same timeout independently. Effective troubleshooting validates client identity, cloud firewall state, host firewall state, service listening state, and HTTP response in order.
+
 ## End-of-project review checklist
 
 Before final portfolio completion, review this log and confirm:

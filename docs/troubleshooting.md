@@ -23,6 +23,39 @@ Treatment:
 
 Do not open SSH to `0.0.0.0/0`.
 
+## Grafana connection timeout
+
+Likely causes:
+
+- the administrator public IP no longer matches the Azure NSG allowlist
+- UFW still contains an older source `/32`
+- Grafana is not listening on port `3000`
+
+Check the current address and Azure rule first:
+
+```powershell
+Invoke-RestMethod -Uri 'https://api.ipify.org?format=json'
+az network nsg rule list `
+  --resource-group cloud-monitoring-dev-centralus-rg `
+  --nsg-name cloud-monitoring-dev-monitoring-nsg `
+  -o table
+```
+
+After applying the NSG change through Terraform, check the host:
+
+```bash
+sudo ufw status numbered
+sudo ss -lntp | grep ':3000'
+curl -I http://127.0.0.1:3000/login
+```
+
+Replace only the stale Grafana rule; do not expose port `3000` globally. Verify both layers:
+
+```powershell
+Test-NetConnection 20.83.32.114 -Port 3000
+Invoke-WebRequest http://20.83.32.114:3000/login -UseBasicParsing
+```
+
 ## Prometheus target down
 
 Checks:
